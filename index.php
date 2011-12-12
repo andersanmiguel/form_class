@@ -19,7 +19,7 @@ $form = new Hform($form_array, $values);
 </head>
 <body>
 
-    <h5>Test form</h5>
+    <h5>Live Test form</h5>
     <?php echo $form->render(); ?>
 
 </body>
