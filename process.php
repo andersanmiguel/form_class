@@ -13,8 +13,7 @@ $fields = $form->get_fields();
 $valid = new Validator($fields, $values);
 
 if(is_array($valid->veredict())) {
-    
-    header('Location: index.php?errores='.serialize($valid->veredict()));
+    header('Location: index.php?errores='.serialize($valid->veredict()).'&values='.serialize($values));
 } else {
     $message = 'Mission accomplished.';
     header('Location: index.php?message='.$message);

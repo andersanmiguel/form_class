@@ -8,6 +8,8 @@ include 'contact_form.php';
 $form_array = contact_form();
 $values = array('email_1' => 'a@a.c', 'socio' => 'n', 'subject' => 'asdasdasd asdokjasd ', 'provincia' => 2);
 $values = array();
+$values = isset($_GET['values']) ? $_GET['values']: array();
+
 
 $form = new Hform($form_array, $values);
 
