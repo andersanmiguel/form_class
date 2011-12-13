@@ -2,25 +2,23 @@
 
 include 'validator.php';
 include 'contact_form.php';
+include 'hform.php';
 
-$form_array = contact_form();
-
-if(isset($form_array['definition'])) {
-    unset($form_array['definition']);
-}
-if(isset($form_array['submit'])) {
-    unset($form_array['submit']);
-} 
-foreach($form_array['fields'] as $fieldset) {
-    foreach($fieldset as $id => $field) {
-        if(is_array($field)) {
-            $fields[$id] = $field;
-        }
-    }
-}
 $values = $_POST;
 
+$form_array = contact_form();
+$form = new Hform($form_array);
+$fields = $form->get_fields();
+
 $valid = new Validator($fields, $values);
+
+if(is_array($valid->veredict())) {
+    
+    header('Location: index.php?errores='.serialize($valid->veredict()));
+} else {
+    $message = 'Mission accomplished.';
+    header('Location: index.php?message='.$message);
+}
 
 
 

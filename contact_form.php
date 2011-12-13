@@ -8,7 +8,7 @@ function contact_form () {
         'definition' => array(
             'method' => 'POST',
             'action' => 'process.php',
-            'filedsets' => true
+            'fieldsets' => true
         ),      
         'fields' => array(
             'fieldset' => array(
@@ -87,4 +87,36 @@ function contact_form () {
 
     return $def;
 
+}
+
+function second_form() {
+
+    $def = array(
+        'definition' => array(
+            'method' => 'POST',
+            'action' => 'process.php',
+        ),
+        'fields' => array(
+            'subject' => array(
+                'form_type' => 'textarea',
+                'id' => 'subject',
+                'name' => 'subject',
+                'label' => 'Di lo que quieras:',
+                'required' => true,
+                'validation_rules' => array(
+                    'required' => true,
+                    'type' => 'string',
+                    'args' => '5-12'
+                )
+            ) 
+        ),
+        'submit' => array(
+            'form_type' => 'input',
+            'type' => 'submit',
+            'label' => '',
+            'id' => 'submit'
+        )
+    );
+
+    return $def;
 }

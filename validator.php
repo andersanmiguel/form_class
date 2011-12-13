@@ -33,15 +33,6 @@ class Validator {
             }
         }
 
-        $errores = $this->getErrors();
-
-        if(empty($errores)) {
-            // OK
-        } else {
-            echo '<pre>';
-            print_r($errores);
-            echo '</pre>';
-        }
 
     }
 
@@ -122,6 +113,22 @@ class Validator {
         
 
         return $message;
+    }
+
+    function veredict() {
+
+        $errores = $this->getErrors();
+
+        if(empty($errores)) {
+            // OK
+            // echo 'Yeah!';
+            return true;
+        } else {
+            // echo '<pre>';
+            // print_r($errores);
+            // echo '</pre>';
+            return $errores;
+        }
     }
 
     

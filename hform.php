@@ -7,9 +7,14 @@ class Hform {
         - error display?? 
           * Maybe <span class="error"> On __construct() or form()...
         - Quitar los required del markup
+        - Script (shell, php??) para generar el código de un formulario de prueba
+        - Templates de formularios
     */
 
     protected $html;
+    protected $definition;
+    protected $submit;
+    protected $form_array;
 
     function __construct($form_array, $values = array()) {
         
@@ -19,60 +24,42 @@ class Hform {
             return false;
         }
         if(isset($form_array['definition'])) {
-            $definition = $form_array['definition'];
+            $this->definition = $form_array['definition'];
             unset($form_array['definition']);
         } else {
             return false;
         }
         if(isset($form_array['submit'])) {
-            $submit = $form_array['submit'];
+            $this->submit = $form_array['submit'];
             unset($form_array['submit']);
         } else {
             return false;
         }
 
+        $this->form_array = $form_array;
+
+    } 
+
+    public function set_html($definition, $form_array, $submit) {
+    
         $html = '';
 
         $html .= $this->open_form($definition);
 
-        $num_fieldset = count($form_array['fields']);
-        foreach($form_array['fields'] as $fieldset) {
-            if($num_fieldset > 1) {
-                $html .= '<fieldset>';
-                if(isset($fieldset['legend'])) {
-                    $html .= '<legend>'.$fieldset['legend'].'</legend>';
-                    unset($fieldset['legend']);
-                }
+        if(isset($definition['fieldsets']) && $definition['fieldsets'] == true) {
+            foreach($form_array['fields'] as $fieldset) {
+                $html .= $this->fieldset($fieldset);
             }
-            foreach($fieldset as $field) {
-                if(isset($field['validation_rules'])) {
-                    unset($field['validation_rules']);
-                }
-                if(!empty($values) && is_array($values)){
-                    if(isset($values[$field['name']])) {
-                        $value = $values[$field['name']];
-                    } else {
-                        $value = '';
-                    }
-                } else {
-                    $value = '';
-                }
-
-                if($field['form_type'] == 'radio') { $html .= '<p>'; }
-                $html .= $this->$field['form_type']($field, $value, 'before', 'p')."\n";
-                if($field['form_type'] == 'radio') { $html .= '</p>'; }
-            }
-            if($num_fieldset > 1) {
-                $html .= '</fieldset>';
-            }
+        } else {
+            $html .= $this->fieldset($form_array['fields']);
         }
         $html .= $this->$submit['form_type']($submit, '', 'before', 'p')."\n";
 
         $html .= $this->close_form();
 
         $this->html = $html;
-        return $this->html;
-    } 
+    
+    }
 
     public function open_form($desc) {
 
@@ -102,6 +89,37 @@ class Hform {
 
     public function close_form() {
         return '</form>';
+    }
+
+    public function fieldset($fieldset) {
+        $html = '';
+
+        $html .= '<fieldset>';
+        if(isset($fieldset['legend'])) {
+            $html .= '<legend>'.$fieldset['legend'].'</legend>';
+            unset($fieldset['legend']);
+        }
+        foreach($fieldset as $field) {
+            if(isset($field['validation_rules'])) {
+                unset($field['validation_rules']);
+            }
+            if(!empty($values) && is_array($values)){
+                if(isset($values[$field['name']])) {
+                    $value = $values[$field['name']];
+                } else {
+                    $value = '';
+                }
+            } else {
+                $value = '';
+            }
+
+            if($field['form_type'] == 'radio') { $html .= '<p>'; }
+            $html .= $this->$field['form_type']($field, $value, 'before', 'p')."\n";
+            if($field['form_type'] == 'radio') { $html .= '</p>'; }
+        }
+        $html .= '</fieldset>';
+
+        return $html;
     }
 
     public function input($desc, $value = '', $label_position = 'before', $wrap = '') {
@@ -178,6 +196,8 @@ class Hform {
     public function select($desc, $value='', $label_position = 'before') {
         
         $html = '';
+        $label = '';
+        $args = '';
 
         unset($desc['form_type']);
 
@@ -283,6 +303,9 @@ class Hform {
         // <input type="radio" name="name" id="id" class="" ... />
 
         $html = '';
+        $args = '';
+        $label = '';
+
         $desc['type'] = $desc['form_type'];
         unset($desc['form_type']);
 
@@ -321,7 +344,30 @@ class Hform {
     }
 
     public function render() {
+        $this->set_html($this->definition, $this->form_array, $this->submit);
         echo $this->html;
+    }
+
+    public function get_fields() {
+
+        $fields = array();
+        $form_array = $this->form_array;
+        $definition = $this->definition;
+        foreach($form_array['fields'] as $fieldset) {
+            if(isset($definition['fieldsets']) && $definition['fieldsets'] == true) {
+                foreach($fieldset as $id => $field) {
+                    if(is_array($field)) {
+                        $fields[$id] = $field;
+                    }
+                }
+            } else {
+                $fields[] = $fieldset;
+            }
+        }
+
+        return $fields;
+
+        
     }
 
 }
