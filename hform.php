@@ -18,32 +18,49 @@ class Hform {
     protected $errors;
     protected $form_array;
 
-    function __construct($form_array, $values = array(), $errors = array()) {
-        
-        // Extraer la definicion del formulario y los botones de acción
-        
-        if($form_array == '') {
-            return false;
+    function __construct($form_array = array(), $values = array(), $errors = array()) {
+
+        if(!empty($form_array)) {
+            $this->set_form($form_array);
         }
-        if(isset($form_array['definition'])) {
-            $this->definition = $form_array['definition'];
-            unset($form_array['definition']);
-        } else {
-            return false;
+        if(!empty($values)) {
+            $this->set_values($values);
         }
-        if(isset($form_array['submit'])) {
-            $this->submit = $form_array['submit'];
-            unset($form_array['submit']);
-        } else {
-            return false;
+        if(!empty($errors)) {
+            $this->set_errors($errors);
         }
 
-        $this->values = $values;
-        $this->errors = $errors;
+    } 
+
+    public function set_form($form_array = array()) {
+
+        if(empty($form_array)) {
+            trigger_error('There is no form, ??', E_USER_ERROR);
+        }
+
+        if(!isset($form_array['definition'])) {
+            trigger_error('No form definition in array', E_USER_WARNING);
+        } else {
+            $this->definition = $form_array['definition'];
+        }
+
+        if(!isset($form_array['submit'])) {
+            trigger_error('No submit button', E_USER_WARNING);
+        } else {
+            $this->submit = $form_array['submit'];
+        }
 
         $this->form_array = $form_array;
 
-    } 
+    }
+
+    public function set_values($values = array()) {
+        $this->values = $values;
+    }
+
+    public function set_errors($errors = array()) {
+        $this->errors = $errors;
+    }
 
     public function set_html($definition, $form_array, $submit, $values = array()) {
     

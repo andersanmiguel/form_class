@@ -8,24 +8,23 @@ include 'contact_form.php';
 $form_array = contact_form();
 $values = array('email_1' => 'a@a.c', 'socio' => 'n', 'subject' => 'asdasdasd asdokjasd ', 'provincia' => 2);
 $values = array();
+$errors = array();
 $values = isset($_GET['values']) ? unserialize(urldecode($_GET['values'])) : array();
-echo '<pre>';
-print_r($values);
-echo '</pre>';
 
 
 $message = isset($_GET['message']) ? $_GET['message'] : 'Demo - formulario';
 
 if(isset($_GET['errores'])) {
     $errors = unserialize(urldecode($_GET['errores']));
-    echo '<pre>';
-    print_r(unserialize(urldecode($_GET['errores'])));
-    echo '</pre>';
-}
+} 
 
 
 
 $form = new Hform($form_array, $values, $errors);
+
+// $form->set_form($form_array);
+// $form->set_values($values);
+// $form->set_errors($errors);
 
   
 ?>
