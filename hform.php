@@ -14,9 +14,11 @@ class Hform {
     protected $html;
     protected $definition;
     protected $submit;
+    protected $values;
+    protected $errors;
     protected $form_array;
 
-    function __construct($form_array, $values = array()) {
+    function __construct($form_array, $values = array(), $errors = array()) {
         
         // Extraer la definicion del formulario y los botones de acción
         
@@ -36,11 +38,14 @@ class Hform {
             return false;
         }
 
+        $this->values = $values;
+        $this->errors = $errors;
+
         $this->form_array = $form_array;
 
     } 
 
-    public function set_html($definition, $form_array, $submit) {
+    public function set_html($definition, $form_array, $submit, $values = array()) {
     
         $html = '';
 
@@ -48,11 +53,14 @@ class Hform {
 
         if(isset($definition['fieldsets']) && $definition['fieldsets'] == true) {
             foreach($form_array['fields'] as $fieldset) {
-                $html .= $this->fieldset($fieldset);
+                $html .= $this->fieldset($fieldset, $values);
             }
         } else {
-            $html .= $this->fieldset($form_array['fields']);
+            $html .= $this->fieldset($form_array['fields'], $values);
         }
+
+
+
         $html .= $this->$submit['form_type']($submit, '', 'before', 'p')."\n";
 
         $html .= $this->close_form();
@@ -91,7 +99,7 @@ class Hform {
         return '</form>';
     }
 
-    public function fieldset($fieldset) {
+    public function fieldset($fieldset, $values = array()) {
         $html = '';
 
         $html .= '<fieldset>';
@@ -115,6 +123,9 @@ class Hform {
 
             if($field['form_type'] == 'radio') { $html .= '<p>'; }
             $html .= $this->$field['form_type']($field, $value, 'before', 'p')."\n";
+            if(isset($this->errors[$field['name']])) {
+                $html .= '<span class="error">'.$this->errors[$field['name']].'</span>';
+            }
             if($field['form_type'] == 'radio') { $html .= '</p>'; }
         }
         $html .= '</fieldset>';
@@ -157,6 +168,9 @@ class Hform {
         }
 
         if($value != '') {
+            if($desc['type'] == 'checkbox') {
+                $args .= 'checked="checked" '; 
+            }
             $args .= 'value="'.$value.'" ';
         }
 
@@ -344,7 +358,7 @@ class Hform {
     }
 
     public function render() {
-        $this->set_html($this->definition, $this->form_array, $this->submit);
+        $this->set_html($this->definition, $this->form_array, $this->submit, $this->values);
         echo $this->html;
     }
 
