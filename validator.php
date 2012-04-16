@@ -33,7 +33,6 @@ class Validator {
             }
         }
 
-
     }
 
     function validate_empty($field, $message = '') {
@@ -94,7 +93,7 @@ class Validator {
         
         switch ($condition) {
             case 'empty':
-                $message = 'El campo no puede estar vacío';
+                $message = $this->l('El campo no puede estar vacío');
                 break;
             
             case 'string':
@@ -107,7 +106,7 @@ class Validator {
             
             default:
                 // code...
-                $message = 'Error en el campo del mensaje';
+                $message = 'Error en el campo del formulario';
                 break;
         }
         
@@ -115,7 +114,7 @@ class Validator {
         return $message;
     }
 
-    function veredict() {
+    function fail_validator() {
 
         $errores = $this->getErrors();
 
@@ -129,6 +128,10 @@ class Validator {
             // echo '</pre>';
             return $errores;
         }
+    }
+
+    function l($message) {
+        return $message;
     }
 
     

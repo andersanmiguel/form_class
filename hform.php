@@ -344,6 +344,13 @@ class Hform {
             $desc['name'] = $desc['id'];
         }
 
+        if(isset($desc['label'])) {
+            $label .= '<label for="'.$desc['id'].'">'.$desc['label'].'</label>';
+            unset($desc['label']);
+        } else {
+            $label .= '<label for="'.$desc['id'].'">'.ucfirst($desc['id']).':</label>';
+        }
+
         foreach($desc as $attr => $val) {
             if(!is_array($val)) {
                 $args .= $attr.'="'.$val.'" ';
@@ -398,7 +405,10 @@ class Hform {
 
         return $fields;
 
-        
+    }
+
+    public function disable_errors() {
+        $this->errors = array();
     }
 
 }
