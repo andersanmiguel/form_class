@@ -8,7 +8,7 @@ include 'hform.php';
 // Load the form
 include 'contact_form.php';
 $form_array = contact_form();
-$form_array = second_form();
+// $form_array = second_form();
 
 $values = array();
 $errors = array();
