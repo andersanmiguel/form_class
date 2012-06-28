@@ -12,6 +12,7 @@ function contact_form () {
         ),      
         'fields' => array(
             'fieldset' => array(
+                'fieldset' => true,
                 'legend' => 'asdasd',
                 'nombre2' => array(
                     'form_type' => 'input',
@@ -70,6 +71,7 @@ function contact_form () {
                 ),
                 'socio' => array(
                     'form_type' => 'radio',
+                    'id' => 'socio',
                     'name' => 'socio',
                     'data' => $radio_data
                 )

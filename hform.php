@@ -381,6 +381,64 @@ class Hform {
 
     }
 
+    public function generate_label($form_field, $label_text = '', $args = array()) {
+
+        // <label for="$form_field" $args? > 
+        // $label_text || ucfirst($form_field) 
+        // </label>
+
+        $htm = '';
+        $args_str = '';
+
+        if (!empty($args)) {
+            $args_str = $this->process_args($args);
+        }
+
+        $html = '<label for="'.$form_field.'"'.$args_str.'>';
+        $html .= $label_text != '' ? $label_text : ucfirst($form_field);
+        $html .= '</label>';
+ 
+        return $html;
+
+    }
+
+    protected function process_args($args = array()) {
+        
+        // id="value" id2="value2" id3 
+
+        $html = '';
+
+        if (empty($args)) {
+            return false;
+        }
+
+        if (!is_array($args)) {
+            return ' '.$args;
+        }
+        
+        $html = $this->create_string_from_array($args);
+
+        return $html;
+
+    }
+
+    private function create_string_from_array($arr) {
+        if (!is_array($arr)) {
+            return false;
+        }
+
+        foreach ($args as $id => $val) {
+            if ($val != '') {
+                $html .= $id.'="'.$val.'" ';
+            } else {
+                $html .= $id.' ';
+            }
+        }
+
+        $html = ' '.trim($html);
+
+    }
+
     public function render() {
         $this->set_html($this->definition, $this->form_array, $this->submit, $this->values);
         echo $this->html;

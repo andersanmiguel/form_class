@@ -3,7 +3,7 @@
 error_reporting(-1);
 
 // Load the hform class
-include 'hform.php';
+include 'forms.php';
 
 // Load the form
 include 'contact_form.php';
@@ -21,7 +21,7 @@ if(isset($_GET['errores'])) {
 } 
 
 // Set the form
-$form = new Hform($form_array, $values, $errors);
+$form = new Forms($form_array, $values, $errors);
 
 // Alternative syntax to set the form
 // $form = new Hform();
@@ -48,6 +48,10 @@ $form = new Hform($form_array, $values, $errors);
 
     <h5>Live Test form</h5>
     <?php // Show the form, if $values then show them, if $errors then span them and show them ?>
+    <?php echo $form->label('f', 'required'); ?>
+    <?php echo $form->input('f', 'required'); ?>
+    <?php echo $form->checkbox('f', array('h', 'g'), 'required'); ?>
+    <?php echo $form->textarea('f', 'required'); ?>
     <?php echo $form->render(); ?>
 
 </body>
