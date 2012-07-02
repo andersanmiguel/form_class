@@ -100,7 +100,6 @@ class Forms {
         return $this;
         
     }
-    
 
     /**
      * set_form_values
@@ -243,7 +242,7 @@ class Forms {
         // $label_text || ucfirst($form_field) 
         // </label>
 
-        $htm = '';
+        $html = '';
         $args_str = '';
 
         if (!empty($args)) {
@@ -297,11 +296,7 @@ class Forms {
         $html .= $args;
         $html .= ' />';
 
-        if ($this->show_errors == true && isset($this->errors[$name])) {
-            $errors = '<span class="form-error">'.$this->errors[$name].'</span>';
-            $html .= $errors;
-        }
-
+        $html = $this->process_errors($name, $html);
         return $html;
 
     }
@@ -339,7 +334,7 @@ class Forms {
 
         $html .= '</textarea>';
 
-
+        $html = $this->process_errors($name, $html);
         return $html;
     }
 
@@ -352,7 +347,7 @@ class Forms {
      * @access public
      * @return $string
      */
-    public function checkbox($name, $value, $args = array()) {
+    public function checkbox($name, $value = '', $args = array()) {
 
         /* ToDo:
             Think about errors and how display them
@@ -364,6 +359,11 @@ class Forms {
         $multiple = '';
 
         $args = !empty($args) ? $this->attributes($args) : '';
+        
+        if (empty($value)) {
+            $value = $name;
+        }
+
         if (is_array($value)) {
 
             $i = 0;
@@ -392,11 +392,12 @@ class Forms {
             $html .= ' id="'.$id.'" '.$args.' value="'.$value.'"'.$args.' />';
         }
 
+        $html = $this->process_errors($name, $html);
         return $html;
 
     }
     
-    public function checkbox($name, $values, $args = array()) {
+    public function select($name, $values, $args = array()) {
 
         // <select name="$name|$name[]" $args>
         // foreach $values
@@ -406,38 +407,66 @@ class Forms {
         $multiple = '';
 
         $args = !empty($args) ? $this->attributes($args) : '';
-        if (is_array($value)) {
 
-            $i = 0;
-            foreach ($value as $val) {
-                if (is_array($args) && isset($args['id'])) {
-                    $id = $args['id'].$i;
-                    unset($args['id']);
-                } else {
-                    $id = $name.$i;
-                }
-                $i++;
+        $html .= '<select name="'.$name.'"';
 
-                $html .= '<input type="checkbox" name="'.$name.'[]"'; 
-                $html .= ' id="'.$id.'" '.$args.' value="'.$val.'"'.$args.' />';
-            }
-
+        if (is_array($args) && isset($args['id'])) {
+            $id = $args['id'];
+            unset($args['id']);
         } else {
-            if (is_array($args) && isset($args['id'])) {
-                $id = $args['id'];
-                unset($args['id']);
-            } else {
-                $id = $name;
-            }
+            $id = $name;
+        }
+        $html .= ' id="'.$id.'"';
+        $args = !empty($args) ? $this->attributes($args) : '';
+        $html .= $args;
+        $html .= '>';
 
-            $html .= '<input type="checkbox" name="'.$name.'"'; 
-            $html .= ' id="'.$id.'" '.$args.' value="'.$value.'"'.$args.' />';
+        if (!is_array($values)) {
+            $this->definition_error('Valores en el select');
+        } else {
+            foreach ($values as $id => $val) {
+                $html .= '<option value="'.$val.'">'.$id.'</option>';
+            }
         }
 
-        return $html;
+        $html .= '</select>';
 
+        $html = $this->process_errors($name, $html);
+        return $html;
     }
+
     
+    protected function parse_form_fields($array = array()) {
+            
+        if (isset($this->form)) {
+            echo '<pre>';
+            print_r($this->form['fields']);
+            echo '</pre>';
+            $array = $this->form['fields'];
+        }
+        if ($this->is_fieldset($array)) {
+            $html = '<fieldset>';
+            unset($array['fieldset']);
+            if (isset($array['legend'])) {
+                // process legend
+                unset($array['legend']);
+            }
+
+            foreach ($array as $field) {
+                $html .= $this->$field['type']($field['name']);   
+            }
+
+            $html .= '</fieldset>';
+        
+        } else {
+            $html .= $this->$field['type'];   
+        }
+
+        $this->html .= $html;
+
+        return $this;
+
+    } 
     
     
     /**
@@ -469,6 +498,19 @@ class Forms {
         return $html;
 
     }
+
+    protected function process_errors($name, $string) {
+        if ($this->show_errors == true && isset($this->errors[$name])) {
+            $errors = '<span class="form-error">'.$this->errors[$name].'</span>';
+            if ($this->error_position === 'before') {
+                $string = $errors.$string;
+            } else {
+                $string .= $errors;
+            }
+        }
+        return $string;
+    }
+
     
     /**
      * definition_error
@@ -488,9 +530,10 @@ class Forms {
      * @return string
      */
     public function render() {
-        echo '<pre>';
-        print_r($this->form);
-        echo '</pre>';
+        // echo '<pre>';
+        // print_r($this->form);
+        // echo '</pre>';
+        $this->parse_form_fields();
         echo $this->html;
     }
     

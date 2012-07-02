@@ -20,8 +20,11 @@ if(isset($_GET['errores'])) {
     $errors = unserialize(urldecode($_GET['errores']));
 } 
 
+$errors['input'] = 'Error en el campo input';
+
 // Set the form
 $form = new Forms($form_array, $values, $errors);
+$form->show_errors = true;
 
 // Alternative syntax to set the form
 // $form = new Hform();
@@ -48,10 +51,11 @@ $form = new Forms($form_array, $values, $errors);
 
     <h5>Live Test form</h5>
     <?php // Show the form, if $values then show them, if $errors then span them and show them ?>
-    <?php echo $form->label('f', 'required'); ?>
-    <?php echo $form->input('f', 'required'); ?>
-    <?php echo $form->checkbox('f', array('h', 'g'), 'required'); ?>
-    <?php echo $form->textarea('f', 'required'); ?>
+    <?php echo $form->label('input', 'Text label'); ?>
+    <?php echo $form->input('input', 'required'); ?>
+    <?php echo $form->checkbox('checkbox', array('h', 'g'), 'required'); ?>
+    <?php echo $form->select('select', array('s' => 'h', 'g'), 'required'); ?>
+    <?php echo $form->textarea('textarea', array('required', 'cols' => 50, 'rows' => 10)); ?>
     <?php echo $form->render(); ?>
 
 </body>

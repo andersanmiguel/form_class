@@ -11,11 +11,8 @@ function contact_form () {
             'fieldsets' => true
         ),      
         'fields' => array(
-            'fieldset' => array(
                 'fieldset' => true,
-                'legend' => 'asdasd',
-                'nombre2' => array(
-                    'form_type' => 'input',
+                array(
                     'type' => 'checkbox',
                     'name' => 'nombre2',
                     'id' => 'nombre2',
@@ -26,8 +23,7 @@ function contact_form () {
                     )
                 ), 
                 'nombre' => array(
-                    'form_type' => 'input',
-                    'type' => 'text',
+                    'type' => 'input',
                     'name' => 'nombre',
                     'id' => 'nombre',
                     'placeholder' => 'Nombre',
@@ -39,8 +35,7 @@ function contact_form () {
                     )
                 ), 
                 'email_1' => array(
-                    'form_type' => 'input',
-                    'type' => 'email',
+                    'type' => 'input',
                     'id' => 'email_1',
                     'name' => 'email_1',
                     'label' => 'Introduce tu email:',
@@ -48,34 +43,18 @@ function contact_form () {
                     'required' => true
                 ),
                 'subject' => array(
-                    'form_type' => 'textarea',
+                    'type' => 'textarea',
                     'id' => 'subject',
                     'name' => 'subject',
                     'label' => 'Di lo que quieras:',
                     'required' => true
                 ), 
                 'name_form' => array(
-                    'form_type' => 'hidden',
+                    'type' => 'input',
                     'id' => 'name_form',
                     'name' => 'name_form',
                     'value' => 'test1'
                 ),
-            ),
-            'fieldset2' => array(
-                'legend' => 'Y otro fieldset',
-                'provincia' => array(
-                    'form_type' => 'select',
-                    'id' => 'provincia',
-                    'name' => 'provincia',
-                    'data' => $provincias
-                ),
-                'socio' => array(
-                    'form_type' => 'radio',
-                    'id' => 'socio',
-                    'name' => 'socio',
-                    'data' => $radio_data
-                )
-            ),
         ),
         'submit' => array(
             'form_type' => 'input',
