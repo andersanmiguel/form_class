@@ -14,9 +14,11 @@ function contact_form () {
                 'fieldset' => true,
                 array(
                     'type' => 'checkbox',
+                    'args' => array(
+                        'required' => true
+                    ),
                     'name' => 'nombre2',
                     'id' => 'nombre2',
-                    'label' => 'Nombre 2:',
                     'required' => true,
                     'validation_rules' => array(
                         'required' => true,
@@ -25,6 +27,10 @@ function contact_form () {
                 'nombre' => array(
                     'type' => 'input',
                     'name' => 'nombre',
+                    'label' => array(
+                        'text' => 'Yeyhh, first label',
+                        'style' => 'display: block;'
+                    ),
                     'id' => 'nombre',
                     'placeholder' => 'Nombre',
                     'required' => true,
@@ -38,7 +44,6 @@ function contact_form () {
                     'type' => 'input',
                     'id' => 'email_1',
                     'name' => 'email_1',
-                    'label' => 'Introduce tu email:',
                     'placeholder' => 'mail@ejemplo.com',
                     'required' => true
                 ),
@@ -46,7 +51,6 @@ function contact_form () {
                     'type' => 'textarea',
                     'id' => 'subject',
                     'name' => 'subject',
-                    'label' => 'Di lo que quieras:',
                     'required' => true
                 ), 
                 'name_form' => array(

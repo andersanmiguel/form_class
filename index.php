@@ -51,11 +51,11 @@ $form->show_errors = true;
 
     <h5>Live Test form</h5>
     <?php // Show the form, if $values then show them, if $errors then span them and show them ?>
-    <?php echo $form->label('input', 'Text label'); ?>
-    <?php echo $form->input('input', 'required'); ?>
-    <?php echo $form->checkbox('checkbox', array('h', 'g'), 'required'); ?>
-    <?php echo $form->select('select', array('s' => 'h', 'g'), 'required'); ?>
-    <?php echo $form->textarea('textarea', array('required', 'cols' => 50, 'rows' => 10)); ?>
+    <?php // echo $form->label('input', 'Text label'); ?>
+    <?php // echo $form->input('input', 'required'); ?>
+    <?php // echo $form->checkbox('checkbox', array('h', 'g'), 'required'); ?>
+    <?php // echo $form->select('select', array('s' => 'h', 'g'), 'required'); ?>
+    <?php // echo $form->textarea('textarea', array('required', 'cols' => 50, 'rows' => 10)); ?>
     <?php echo $form->render(); ?>
 
 </body>

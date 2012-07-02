@@ -61,6 +61,10 @@ class Forms {
      * @access public
      */
     public $error_position = 'after';
+    public $label_position = 'before';
+
+    public $stag = 'p';
+    public $stag_args = '';
 
     /**
      * __construct
@@ -245,6 +249,9 @@ class Forms {
         $html = '';
         $args_str = '';
 
+        if (isset($args['text'])) { unset($args['text']); }
+        if (isset($args['position'])) { unset($args['position']); }
+
         if (!empty($args)) {
             $args_str = $this->attributes($args);
         }
@@ -369,10 +376,10 @@ class Forms {
             $i = 0;
             foreach ($value as $val) {
                 if (is_array($args) && isset($args['id'])) {
-                    $id = $args['id'].$i;
+                    $id = $args['id'].'-'.$i;
                     unset($args['id']);
                 } else {
-                    $id = $name.$i;
+                    $id = $name.'-'.$i;
                 }
                 $i++;
 
@@ -434,14 +441,10 @@ class Forms {
         $html = $this->process_errors($name, $html);
         return $html;
     }
-
     
     protected function parse_form_fields($array = array()) {
             
         if (isset($this->form)) {
-            echo '<pre>';
-            print_r($this->form['fields']);
-            echo '</pre>';
             $array = $this->form['fields'];
         }
         if ($this->is_fieldset($array)) {
@@ -453,13 +456,31 @@ class Forms {
             }
 
             foreach ($array as $field) {
-                $html .= $this->$field['type']($field['name']);   
+                $args = isset($field['args']) ? $field['args'] : array();
+                $label = '';
+                $before = '';
+                $after = '';
+                if (isset($field['label'])) {
+                    $label_text = isset($field['label']['text']) ? $field['label']['text'] : $field['name'];
+                    $label = $this->label($field['name'], $label_text, $field['label']);
+                    $l_pos = isset($field['label']['position']) ? $field['label']['position'] : $this->label_position;
+                    if ($l_pos == 'after') {
+                        $after = $label;
+                        $before = '';
+                    } else {
+                        $after = '';
+                        $before = $label;
+                    } 
+                }
+                $html .= '<'.$this->stag.$this->stag_args.'>'.$before.$this->$field['type']($field['name'], $args).$after.'</'.$this->stag.'>';
+                
+
             }
 
             $html .= '</fieldset>';
         
         } else {
-            $html .= $this->$field['type'];   
+            $html .= '<p>'.$this->$field['type'].'</p>';
         }
 
         $this->html .= $html;
