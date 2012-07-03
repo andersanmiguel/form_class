@@ -2,16 +2,17 @@
 
 function contact_form () {
 
-    $provincias = array(1 => 'Zaragoza', 2 => 'Huesca', 35 => 'Teruel');
+    $provincias = array('Zaragoza' => '35', 'Huesca' => 'as', 'Teruel' => 'ad');
     $radio_data = array('Sí' => 'y', 'No' => 'n');
     $def = array(
         'definition' => array(
             'method' => 'POST',
             'action' => 'process.php',
-            'fieldsets' => true
+            'tag' => 'p',
         ),      
         'fields' => array(
                 'fieldset' => true,
+                'legend' => 'Un formulario, sin más',
                 array(
                     'type' => 'checkbox',
                     'args' => array(
@@ -24,15 +25,16 @@ function contact_form () {
                         'required' => true,
                     )
                 ), 
-                'nombre' => array(
-                    'type' => 'input',
+                array(
+                    'type' => 'select',
                     'name' => 'nombre',
                     'label' => array(
                         'text' => 'Yeyhh, first label',
-                        'style' => 'display: block;'
+                        'style' => 'display: block;',
                     ),
-                    'id' => 'nombre',
-                    'placeholder' => 'Nombre',
+                    'args' => array(
+                        'values' => $provincias,
+                    ),
                     'required' => true,
                     'validation_rules' => array(
                         'required' => true,
@@ -40,32 +42,32 @@ function contact_form () {
                         'args' => '5-12'
                     )
                 ), 
-                'email_1' => array(
+                array(
                     'type' => 'input',
                     'id' => 'email_1',
                     'name' => 'email_1',
-                    'placeholder' => 'mail@ejemplo.com',
+                    'args' => array(
+                        'placeholder' => 'mail@ejemplo.com',
+                    ),
                     'required' => true
                 ),
-                'subject' => array(
+                array(
                     'type' => 'textarea',
                     'id' => 'subject',
                     'name' => 'subject',
                     'required' => true
                 ), 
-                'name_form' => array(
+                array(
                     'type' => 'input',
                     'id' => 'name_form',
                     'name' => 'name_form',
                     'value' => 'test1'
                 ),
+                array(
+                    'type' => 'submit',
+                    'name' => 'Enviar',
+                )
         ),
-        'submit' => array(
-            'form_type' => 'input',
-            'type' => 'submit',
-            'label' => '',
-            'id' => 'submit'
-        )
     );
     // $def = '';
 
@@ -98,7 +100,7 @@ function second_form() {
         'submit' => array(
             'form_type' => 'input',
             'type' => 'submit',
-            'label' => '',
+            'value' => '',
             'id' => 'submit'
         )
     );

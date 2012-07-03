@@ -125,7 +125,6 @@ class Forms {
         return $this;
         
     }
-    
 
     /**
      * set_form_array
@@ -193,6 +192,8 @@ class Forms {
             $this->set_action($form_definition['action']);
         }
 
+        $this->stag = isset($form_definition['tag']) ? $form_definition['tag'] : $this->stag;
+
         return $this;
 
     } 
@@ -231,6 +232,31 @@ class Forms {
     }
     
 
+    public function open_form($args = array()) {
+        // <form action="$action" method="$method" $args>
+        $html = '<form action="'.$this->form_action.'" method="'.$this->form_method.'"';
+        $attr = empty($args) ? '' : $this->attributes($args);
+        $html .= $attr.' >';
+
+        return $html;
+    }
+
+    public function close_form() {
+        return '</form>';
+    }
+
+    public function submit($name, $args = array()) {
+        
+        $html = '';
+
+        $html .= '<input type="submit" id="'.$name.'" name="'.$name.'"';
+
+        $value = isset($args['value']) ? $args['value'] : $name;
+
+        $html .= ' value="'.$value.'" />';
+
+        return $html;
+    }
     /**
      * label
      * 
@@ -404,7 +430,16 @@ class Forms {
 
     }
     
-    public function select($name, $values, $args = array()) {
+    /**
+     * select
+     * 
+     * @param string $name 
+     * @param array|string $values 
+     * @param array $args 
+     * @access public
+     * @return string
+     */
+    public function select($name, $args) {
 
         // <select name="$name|$name[]" $args>
         // foreach $values
@@ -412,6 +447,9 @@ class Forms {
         // </select>
         $html = '';
         $multiple = '';
+
+        $values = $args['values'];
+        unset($args['values']);
 
         $args = !empty($args) ? $this->attributes($args) : '';
 
@@ -442,52 +480,67 @@ class Forms {
         return $html;
     }
     
+    
+    /**
+     * parse_form_fields
+     * 
+     * @param $array 
+     * @access protected
+     * @return Form
+     */
     protected function parse_form_fields($array = array()) {
             
+        $html = '';
+
+        $html .= $this->open_form();
         if (isset($this->form)) {
             $array = $this->form['fields'];
         }
         if ($this->is_fieldset($array)) {
-            $html = '<fieldset>';
+            $html .= '<fieldset>';
             unset($array['fieldset']);
             if (isset($array['legend'])) {
                 // process legend
+                $html .= '<legend>'.$array['legend'].'</legend>';
                 unset($array['legend']);
             }
-
-            foreach ($array as $field) {
-                $args = isset($field['args']) ? $field['args'] : array();
-                $label = '';
-                $before = '';
-                $after = '';
-                if (isset($field['label'])) {
-                    $label_text = isset($field['label']['text']) ? $field['label']['text'] : $field['name'];
-                    $label = $this->label($field['name'], $label_text, $field['label']);
-                    $l_pos = isset($field['label']['position']) ? $field['label']['position'] : $this->label_position;
-                    if ($l_pos == 'after') {
-                        $after = $label;
-                        $before = '';
-                    } else {
-                        $after = '';
-                        $before = $label;
-                    } 
-                }
-                $html .= '<'.$this->stag.$this->stag_args.'>'.$before.$this->$field['type']($field['name'], $args).$after.'</'.$this->stag.'>';
-                
-
-            }
-
-            $html .= '</fieldset>';
-        
         } else {
-            $html .= '<p>'.$this->$field['type'].'</p>';
+            unset($array['fieldset']);
         }
+
+        foreach ($array as $field) {
+            $args = isset($field['args']) ? $field['args'] : array();
+            $label = '';
+            $before = '';
+            $after = '';
+            if (isset($field['label'])) {
+                $label_text = isset($field['label']['text']) ? $field['label']['text'] : $field['name'];
+                $label = $this->label($field['name'], $label_text, $field['label']);
+                $l_pos = isset($field['label']['position']) ? $field['label']['position'] : $this->label_position;
+                if ($l_pos == 'after') {
+                    $after = $label;
+                    $before = '';
+                } else {
+                    $after = '';
+                    $before = $label;
+                } 
+            }
+            $html .= '<'.$this->stag.$this->stag_args.'>'.$before.$this->$field['type']($field['name'], $args).$after.'</'.$this->stag.'>';
+            
+        }
+
+        if ($this->is_fieldset($array)) {
+            $html .= '</fieldset>';
+        } 
+
+        $html .= $this->close_form();
 
         $this->html .= $html;
 
         return $this;
 
     } 
+    
     
     
     /**
@@ -520,6 +573,14 @@ class Forms {
 
     }
 
+    /**
+     * process_errors
+     * 
+     * @param string $name 
+     * @param string $string 
+     * @access protected
+     * @return string
+     */
     protected function process_errors($name, $string) {
         if ($this->show_errors == true && isset($this->errors[$name])) {
             $errors = '<span class="form-error">'.$this->errors[$name].'</span>';
@@ -531,16 +592,17 @@ class Forms {
         }
         return $string;
     }
+    
 
     
     /**
      * definition_error
      * 
-     * @param mixed $type_error 
-     * @access public
+     * @param string $type_error 
+     * @access private
      * @return void
      */
-    public function definition_error($type_error) {
+    private function definition_error($type_error) {
         echo 'Error en la definición del formulario: '.$type_error;die;
     }
 
@@ -551,14 +613,8 @@ class Forms {
      * @return string
      */
     public function render() {
-        // echo '<pre>';
-        // print_r($this->form);
-        // echo '</pre>';
         $this->parse_form_fields();
         echo $this->html;
     }
     
-    
-
 }
-
