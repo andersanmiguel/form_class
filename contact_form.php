@@ -36,11 +36,6 @@ function contact_form () {
                         'values' => $provincias,
                     ),
                     'required' => true,
-                    'validation_rules' => array(
-                        'required' => true,
-                        'type' => 'string',
-                        'args' => '5-12'
-                    )
                 ), 
                 array(
                     'type' => 'input',
@@ -49,13 +44,21 @@ function contact_form () {
                     'args' => array(
                         'placeholder' => 'mail@ejemplo.com',
                     ),
-                    'required' => true
+                    'validation_rules' => array(
+                        'required' => true,
+                        'type' => 'email'
+                    )
                 ),
                 array(
                     'type' => 'textarea',
                     'id' => 'subject',
                     'name' => 'subject',
-                    'required' => true
+                    'required' => true,
+                    'validation_rules' => array(
+                        'required' => true,
+                        'type' => 'string',
+                        'args' => '2-12'
+                    )
                 ), 
                 array(
                     'type' => 'input',

@@ -35,7 +35,7 @@ class Validator {
 
     }
 
-    function validate_empty($field, $message = '') {
+    protected function validate_empty($field, $message = '') {
         if($message == '') {
             $message = $this->_message('empty');
         }
@@ -47,7 +47,7 @@ class Validator {
         return true;
     }
 
-    function string($field, $message = '', $length = '') {
+    protected function string($field, $message = '', $length = '') {
         if($message == '') {
             if($length == '') {
                 $message = $this->_message('string');
@@ -63,7 +63,7 @@ class Validator {
                 }
 
                 if(strlen($field) < $min || strlen($field) > $max) {
-                    $message = $this->_message('strlen');
+                    $message = $this->_message('strlen', $length);
                 } 
 
             }
@@ -75,6 +75,21 @@ class Validator {
         }
 
         return true;
+    }
+
+    protected function email($field, $message = '') {
+        
+        if(!preg_match('/[a-zA-Z0-9]/', $field)) {
+            $message = $this->_message('email');
+        } 
+
+        if($message != '') {
+            $this->message = $message;
+            return false;
+        }
+
+        return true;
+        
     }
 
     private function setError($key, $value) {
@@ -89,11 +104,15 @@ class Validator {
         }
     }
 
-    private function _message($condition) {
+    private function _message($condition, $string = '') {
         
         switch ($condition) {
             case 'empty':
                 $message = $this->l('El campo no puede estar vacío');
+                break;
+            
+            case 'email':
+                $message = 'El campo debe ser un email';
                 break;
             
             case 'string':
@@ -101,7 +120,8 @@ class Validator {
                 break;
             
             case 'strlen':
-                $message = 'El campo debe ser una cadena de texto de entre 5 y 12 caracteres';
+                $limits = explode('-', $string);
+                $message = 'El campo debe ser una cadena de texto de entre '.$limits[0].' y '.$limits[1].' caracteres';
                 break;
             
             default:

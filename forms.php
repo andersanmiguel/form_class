@@ -411,6 +411,7 @@ class Forms {
 
                 $html .= '<input type="checkbox" name="'.$name.'[]"'; 
                 $html .= ' id="'.$id.'" '.$args.' value="'.$val.'"'.$args.' />';
+                
             }
 
         } else {
@@ -493,9 +494,7 @@ class Forms {
         $html = '';
 
         $html .= $this->open_form();
-        if (isset($this->form)) {
-            $array = $this->form['fields'];
-        }
+        $array = $this->get_fields('all');
         if ($this->is_fieldset($array)) {
             $html .= '<fieldset>';
             unset($array['fieldset']);
@@ -593,7 +592,25 @@ class Forms {
         return $string;
     }
     
+    /**
+     * get_fields Devuelve el array de los campos para procesarlo como sea
+     * 
+     * @access public
+     * @return array
+     */
+    public function get_fields($data = '') {
 
+        if (isset($this->form)) {
+            $array = $this->form['fields'];
+        }
+        if ($data !== 'all') {
+            if (isset($array['fieldset'])) {
+                unset($array['fieldset']);
+            }
+        }
+        return $array;
+
+    }
     
     /**
      * definition_error

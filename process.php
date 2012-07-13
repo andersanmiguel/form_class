@@ -2,13 +2,12 @@
 
 include 'validator.php';
 include 'contact_form.php';
-include 'hform.php';
+include 'forms.php';
 
 $values = $_POST;
 
 $form_array = contact_form();
-$form_array = second_form();
-$form = new Hform($form_array);
+$form = new Forms($form_array);
 $fields = $form->get_fields();
 
 $valid = new Validator($fields, $values);
